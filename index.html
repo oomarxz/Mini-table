@@ -1331,10 +1331,10 @@ let miTabla = new MiniTable('#contenedorUsuarios', {
 
 let miTablaMini = new MiniTable('#contenedorUsuariosMini', {
     url: 'servidor.json', 
-    urlEliminar: 'eliminar.json', 
-    urlDetail: 'datosEditar.json', // url para datalles y editar
-    urlUpdate: 'actualizar_celda.json',
-    urlOrden: 'guardar_orden.json', // <--- NUEVA URL PARA LA BASE DE DATOS
+    urlEliminar: 'https://steamrobothink.com/mini/eliminar', 
+    urlDetail: 'https://steamrobothink.com/mini/editar', // url para datalles y editar
+    urlUpdate: 'https://steamrobothink.com/mini/actualizar_celda',
+    urlOrden: 'https://steamrobothink.com/mini/guardar_orden', // <--- NUEVA URL PARA LA BASE DE DATOS
     paginacion: 10,
     editable: true, //permite editacion rapida en celda
     seleccionable: true,
