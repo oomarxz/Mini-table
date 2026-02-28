@@ -1,0 +1,13 @@
+{
+    "permissions": { "view": 1, "create": 0, "edit": 1, "delete": 1 },
+    "data": [
+        
+        {"id": 1, "nombre": "Juan Pérez", "email": "juan@mail.com", "position": "Developer"},
+        {"id": 2, "nombre": "Ana Gómez", "email": "ana@mail.com", "position": "Designer"},
+        {"id": 3, "nombre": "Carlos Ruiz", "email": "carlos@mail.com", "position": "Manager"}
+      
+    ]
+}
+
+
+

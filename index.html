@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentación MiniTable JS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/> -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --primary-blue: #1a73e8;
+        }
+        body { font-family: 'Inter', sans-serif; margin: 0; display: flex; color: #333; line-height: 1.6; }
+        
+        /* Menú Lateral */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: #fff;
+            border-right: 1px solid #eee;
+            position: fixed;
+            padding: 2rem 1rem;
+            overflow-y: auto;
+        }
+        .sidebar h2 { color: var(--primary-blue); font-size: 1.5rem; margin-bottom: 2rem; }
+        .sidebar a { display: block; padding: 10px 15px; color: #555; text-decoration: none; border-radius: 6px; margin-bottom: 5px; }
+        .sidebar a:hover, .sidebar a.active { background: #f8f9fa; color: var(--primary-blue); font-weight: 600; }
+
+        /* Contenido Principal */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 3rem;
+            max-width: 900px;
+        }
+        section { margin-bottom: 4rem; }
+        h1 { font-size: 2.2rem; margin-bottom: 1.5rem; color: #111; border-bottom: 2px solid var(--primary-blue); padding-bottom: 10px; }
+        h3 { font-size: 1.3rem; color: #111; margin-top: 2rem; }
+        
+        .destacado { font-weight: 600; color: #111; }
+        .sub-punto { margin-left: 1.5rem; display: block; margin-top: 0.5rem; }
+        .nota-permisos { background: #f1f8ff; border-left: 4px solid var(--primary-blue); padding: 1rem; margin: 1rem 0; font-style: italic; }
+        ul { list-style: none; padding-left: 0; }
+        li { margin-bottom: 1.5rem; }
+        .code-container { margin: 15px 0; border: 1px solid #333; border-radius: 10px; }
+.code-tabs { background: #2d2d2d; display: flex; padding: 5px 10px 0; border-radius: 10px 10px 0 0; gap: 5px; }
+.tab-btn { background: transparent; border: none; color: #888; padding: 8px 15px; cursor: pointer; border-radius: 5px 5px 0 0; transition: 0.3s; }
+.tab-btn:hover { color: #fff; background: #3d3d3d; }
+.tab-btn.active { background: #1e1e1e; color: #569cd6; font-weight: bold; }
+nav a {
+    transition: color 0.3s ease, border-bottom 0.3s ease;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #666; /* Color apagado */
+}
+
+nav a.active {
+    color: #569cd6 !important; /* Azul estilo VS Code */
+    font-weight: bold;
+    border-bottom: 2px solid #569cd6;
+}
+
+/* Esto hace que el icono herede el color del botón y se vea centrado */
+.minitable-btn svg {
+    display: inline-block;
+    vertical-align: middle;
+    pointer-events: none; /* Evita que el click se pierda en el SVG */
+}
+
+/* Ejemplo de colores */
+.btn-edit { color: #2196F3; }
+.btn-delete { color: #f44336; }
+.btn-view { color: #4CAF50; }
+
+.btn-gmail-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.btn-gmail-icon svg {
+    pointer-events: none; /* Esto evita que el click lo detecte el SVG en vez del botón */
+}
+
+/* Animación de rotación */
+@keyframes mini-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Clase que activa el giro */
+.is-spinning {
+    animation: mini-spin 0.6s ease-in-out;
+}
+
+/* Estilo para que el botón no se vea 'feo' y el click sea suave */
+.btn-gmail-icon.icon-refresh {
+    transition: transform 0.1s active;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-gmail-icon.icon-refresh:active {
+    transform: scale(0.85);
+}
+
+.download-button {
+    background-color: #2ea44f; /* Verde estilo GitHub */
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: bold;
+    display: inline-block;
+  }
+  .download-button:hover {
+    background-color: #2c974b;
+  }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar">
+        <h2>MiniTable JS</h2>
+        <a href="#resumen" class="active">Resumen Maestro</a>
+        <a href="#ejemplos">Ejemplos</a>
+        <a href="#instalacion">Instalación</a>
+        <a href="#detalles">Visualización y Edición</a>
+        <a href="#eliminacion">Eliminación de Registros</a>
+        <a href="#edicion-celda">Edición de Celdas</a>
+        <a href="#reordenamiento">Reordenamiento Drag & Drop</a>
+        <a href="#acciones-masivas">Adicionar botones</a>
+        <a href="#referencia-rapida">Referencia Rápida</a>
+        <a href="#licencia-terminos">Licencia y Términos</a>
+        
+    </nav>
+
+    <main class="main-content">
+        
+        <section id="resumen">
+            <h1>Resumen Maestro: MiniTable JS</h1>
+            <p>
+                MiniTable es una solución ligera y dinámica para la gestión de datos en tablas HTML, diseñada para ofrecer una experiencia similar a Gmail (limpia y funcional). Permite visualizar, filtrar, ordenar, editar y reordenar datos mediante Drag & Drop con sincronización en base de datos.
+            </p>
+
+            <ul>
+                <li>
+                    <span class="destacado">1. Características Principales</span>
+                    <span class="sub-punto">
+                        <span class="destacado">Gestión Dinámica de Datos y Permisos:</span> 
+                        La tabla es "inteligente". No solo carga información, sino que se adapta a los permisos que recibe directamente desde el Backend (vía POST). Al momento de listar o cargar los datos, si se recibe una estructura como:
+                    </span>
+                    
+                    <pre style="background: #f4f4f4; padding: 10px; margin: 10px 0; border-radius: 5px; font-family: monospace; font-size: 0.9em;">
+                "permissions": { "view": 1, "create": 0, "edit": 1, "delete": 1 },
+                "data": [ {"id": 1, "nombre": "Juan Pérez", "email": "juan@mail.com", "position": "Developer"} ]</pre>
+
+                    <span class="sub-punto">
+                        La tabla responde automáticamente: el usuario <span class="destacado">no tiene necesidad de crear manualmente los botones</span> de editar, eliminar o ver. La tabla los trae incorporados con sus funciones nativas y, basándose en los permisos recibidos, decide si muestra u oculta cada botón de forma dinámica.
+                    </span>
+
+                    <div class="nota-permisos">
+                        <strong>Dato Clave:</strong> Si el servidor envía "edit": 0, la tabla no solo oculta el botón de edición, sino que desactiva automáticamente el arrastre (Drag) y la edición rápida para ese usuario.
+                    </div>
+
+                    <span class="sub-punto"><span class="destacado">Sistema de Selección (Checkboxes):</span> Incluye un multiselector inteligente que activa una barra de acciones masivas.</span>
+                    <span class="sub-punto"><span class="destacado">Drag & Drop (Escritorio):</span> Reordenamiento visual de filas con protección contra interferencias de archivos externos.</span>
+                    <span class="sub-punto"><span class="destacado">Edición Rápida (Inline Edit):</span> Permite corregir datos al instante con un doble clic (o doble toque en móviles) sin recargar la página.</span>
+                    <span class="sub-punto"><span class="destacado">Paginación y Búsqueda:</span> Filtrado en tiempo real para encontrar datos al segundo.</span>
+                </li>
+
+                <li>
+                    <span class="destacado">2. Configuración y Control Total</span>
+                    <span class="sub-punto">La inicialización es intuitiva, pero lo más potente es el control que le das al desarrollador:</span>
+                    <span class="sub-punto"><span class="destacado">Barra de Acciones (botonesFlotantes):</span> Puedes activar la barra nativa (true) o desactivarla (false) para crear tus propios botones externos y usar solo las funciones de la tabla.</span>
+                    <span class="sub-punto"><span class="destacado">Botones Extra:</span> Tienes la libertad de agregar botones personalizados (ej. Imprimir Factura, Enviar Correo) que reciben automáticamente los IDs seleccionados.</span>
+                    <span class="sub-punto"><span class="destacado">Callbacks (Ganchos):</span> Cada función tiene su "aviso". Tienes un callback para cuando se edita, se elimina o se reordena (onReorder), permitiéndote personalizar alertas o disparar otros procesos.</span>
+                </li>
+
+                <li>
+                    <span class="destacado">3. Personalización Estética (Variables CSS)</span>
+                    <span class="sub-punto">El diseño se adapta a tu marca sin tocar el CSS profundo usando variables :root:</span>
+                    <span class="sub-punto"><span class="destacado">Ajuste de Colores:</span> Cambia el color de encabezados, selección o puntos de arrastre instantáneamente.</span>
+                    <span class="sub-punto"><span class="destacado">Alineación Inteligente:</span> La tabla detecta si el "Drop" está activo.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Con puntos:</span> Usa 8px de margen para una alineación milimétrica.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Sin puntos:</span> Ajusta a 12px para que el contenido respire y se vea ordenado.</span>
+                    <span class="sub-punto"><span class="destacado">Visibilidad:</span> Los puntos de arrastre solo aparecen al pasar el ratón (hover) para mantener la interfaz limpia.</span>
+                </li>
+
+                <li>
+                    <span class="destacado">4. Flujo de Datos y Persistencia (POST)</span>
+                    <span class="sub-punto"><span class="destacado">Sincronización de Orden:</span> Al mover una fila, la tabla envía un array de IDs ordenados al servidor mediante POST.</span>
+                    <span class="sub-punto"><span class="destacado">Edición Instantánea:</span> Al presionar "Enter", se actualiza solo el campo editado, manteniendo la integridad de los datos.</span>
+                    <span class="sub-punto"><span class="destacado">Seguridad de Eventos:</span> El sistema ignora automáticamente archivos del PC o textos externos para evitar errores de "datos nulos".</span>
+                </li>
+
+                <li>
+                    <span class="destacado">5. Compatibilidad y Respuesta</span>
+                    <span class="sub-punto"><span class="destacado">Escritorio:</span> Experiencia completa con Drag & Drop y efectos visuales.</span>
+                    <span class="sub-punto"><span class="destacado">Móvil:</span> Optimizado para lectura y edición rápida mediante toques, desactivando el arrastre para evitar conflictos con el movimiento de la pantalla (scroll).</span>
+                
+                </li>    
+
+                <li>
+                    <span class="destacado">6. Implementación Mínima y Estructura de Columnas</span>
+                    <span class="sub-punto">
+                        Para que **MiniTable** funcione, solo necesitas un contenedor vacío en tu HTML y una configuración básica en JavaScript. La tabla se encarga de renderizar el encabezado, el cuerpo y los controles automáticamente.
+                    </span>
+
+                    <h3 style="font-size: 1rem; margin-bottom: 5px;">Paso 1: El Contenedor HTML</h3>
+                    <span class="sub-punto">
+                        Crea un elemento con un ID único donde quieres que se dibuje la tabla:
+                    </span>
+                    <pre style="background: #f4f4f4; padding: 10px; margin: 10px 0; border-radius: 5px; font-family: monospace;">&lt;div id="contenedorUsuarios"&gt;&lt;/div&gt;</pre>
+
+                    <h3 style="font-size: 1rem; margin-bottom: 5px;">Paso 2: La Función de Inicialización</h3>
+                    <span class="sub-punto">
+                        Define la URL de tus datos y cómo se deben mapear las columnas. Aquí es donde conectas los títulos que ve el usuario con las llaves del JSON que envía tu servidor:
+                    </span>
+    <pre style="background: #1e1e1e; color: #d4d4d4; padding: 20px; margin: 15px 0; border-radius: 10px; font-family: 'Fira Code', monospace; font-size: 1rem; line-height: 1.5; box-shadow: 0 4px 15px rgba(0,0,0,0.3); overflow-x: auto;">
+    <span style="color: #569cd6;">let</span> miTabla = <span style="color: #4ec9b0;">new</span> <span style="color: #4ec9b0;">MiniTable</span>(<span style="color: #ce9178;">'#contenedorUsuarios'</span>, {
+        <span style="color: #9cdcfe;">url</span>: <span style="color: #ce9178;">'servidor.json'</span>, <span style="color: #6a9955;">// Ruta de tu servidor (PHP, Node, Python, etc.)</span>
+        <span style="color: #9cdcfe;">paginacion</span>: <span style="color: #b5cea8;">10</span>,       <span style="color: #6a9955;">// Cantidad de filas por vista</span>
+        <span style="color: #9cdcfe;">botonesFlotantes</span>: <span style="color: #569cd6;">false</span>, <span style="color: #6a9955;">// Oculta la barra nativa para usar botones propios</span>
+        <span style="color: #9cdcfe;">columns</span>: [
+            { <span style="color: #9cdcfe;">title</span>: <span style="color: #ce9178;">'ID'</span>, <span style="color: #9cdcfe;">data</span>: <span style="color: #ce9178;">'id'</span> },           <span style="color: #6a9955;">// Mapeo de columna ID</span>
+            { <span style="color: #9cdcfe;">title</span>: <span style="color: #ce9178;">'Nombre'</span>, <span style="color: #9cdcfe;">data</span>: <span style="color: #ce9178;">'nombre'</span> },   <span style="color: #6a9955;">// Mapeo de columna Nombre</span>
+            { <span style="color: #9cdcfe;">title</span>: <span style="color: #ce9178;">'Correo'</span>, <span style="color: #9cdcfe;">data</span>: <span style="color: #ce9178;">'email'</span> },    <span style="color: #6a9955;">// Mapeo de columna Correo</span>
+            { <span style="color: #9cdcfe;">title</span>: <span style="color: #ce9178;">'Cargo'</span>, <span style="color: #9cdcfe;">data</span>: <span style="color: #ce9178;">'position'</span> }   <span style="color: #6a9955;">// Mapeo de columna Cargo</span>
+        ]
+    });</pre>
+
+                    <div class="nota-permisos">
+                        <span class="destacado">Preparación de Columnas:</span> Cada objeto dentro del array <code>columns</code> define una celda. La propiedad <code>title</code> es el nombre que aparecerá en el encabezado de la tabla, mientras que <code>data</code> debe coincidir exactamente con el nombre del campo que viene en el array de datos del JSON.
+                    </div>
+                </li>
+                <li>
+                    <span class="destacado">7. Estilos de Tabla (Skins)</span>
+                    <span class="sub-punto">
+                        MiniTable ofrece versatilidad visual mediante el uso de "Skins". Por defecto, la tabla tiene un diseño limpio y genérico, pero puedes activar versiones con mayor personalización visual directamente desde el HTML.
+                    </span>
+
+                    <h3 style="font-size: 1rem; margin-bottom: 5px;">Skin Moderno (Modern Skin)</h3>
+                    <span class="sub-punto">
+                        Si buscas una estética más estilizada y contemporánea, puedes aplicar la clase <span class="tag">mini-skin-modern</span> a tu contenedor. Esto cambiará automáticamente el espaciado, las sombras y el estilo de las filas para una apariencia más premium:
+                    </span>
+                    
+                    <pre style="background: #f4f4f4; padding: 10px; margin: 10px 0; border-radius: 5px; font-family: monospace;">&lt;div id="contenedorUsuariosMini" class="mini-skin-modern"&gt;&lt;/div&gt;</pre>
+
+                    <div class="nota-permisos">
+                        <span class="destacado">Nota de Personalización:</span> Independientemente del Skin que elijas, las funcionalidades de edición rápida, arrastre (Drop) y selección masiva se mantienen intactas. Los Skins solo afectan la capa visual (CSS), permitiéndote adaptar la tabla al estilo de tu proyecto sin cambiar ni una sola línea de JavaScript.
+                    </div>
+
+                    <div class="nota-permisos">
+                        <span class="destacado">Consejo Pro:</span> 
+                        Aunque puedes usar <span class="tag">new MiniTable</span> sin asignarlo, te recomendamos guardarlo en una variable (ej. <code>let miTabla</code>). Esto te permitirá usar métodos de la tabla más adelante, como recargar datos o consultar elementos seleccionados desde botones externos.
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section id="ejemplos">
+                <h1>Ejemplos de Implementación</h1>
+                <p>A continuación se muestran los dos escenarios principales: una implementación básica para visualización rápida y una implementación avanzada con control total de eventos y alertas personalizadas.</p>
+
+                <div class="feature-box">
+                    <h2>1. Gestión de Usuarios (Vista Básica)</h2>
+                    <p>Ideal para paneles administrativos donde solo se requiere lectura y una interfaz limpia sin botones adicionales.</p>
+                    
+                    <div id="contenedorUsuarios"></div>
+
+                    <h3 style="font-size: 1rem; margin-top: 20px;">Código de Inicialización:</h3>
+                    
+                    <div class="code-container">
+                        <div class="code-tabs">
+                            <button class="tab-btn active" onclick="switchCode(this, 'js')">Javascript</button>
+                            <button class="tab-btn" onclick="switchCode(this, 'html')">HTML Estructura</button>
+                            <button class="tab-btn" onclick="switchCode(this, 'json')">JSON Estructura</button>
+                            <button class="tab-btn" onclick="switchCode(this, 'php')">PHP Estructura</button>
+                            <button class="tab-btn" onclick="switchCode(this, 'node')">Node.js Estructura</button>
+                        </div>
+
+                        <div class="code-content js-content active">
+    <pre><code class="language-javascript">
+        // --- EJECUCIÓN ---
+        let miTabla = new MiniTable('#contenedorUsuarios', {
+            url: 'servidor.json', // El JavaScript irá aquí a buscar el JSON completo
+            paginacion: 10,
+            botonesFlotantes: false,
+            columns: [
+                { title: 'ID', data: 'id' },
+                { title: 'Nombre', data: 'nombre' },
+                { title: 'Correo', data: 'email' },
+                { title: 'Cargo', data: 'position' }
+            ]
+        });
+
+    </code></pre>
+                        </div>
+
+                        <div class="code-content html-content" style="display:none;">
+<pre><code class="language-markup">
+    &lt;!-- Solamente ese codigo el MiniTable se encarga de armar toda la tabla --&gt;
+    &lt;div id="contenedorUsuarios"&gt;&lt;/div&gt;
+</code></pre>
+
+                        </div>
+                        <div class="code-content json-content" style="display:none;">
+<pre><code class="language-javascript">
+// Los permisos no son hobligatorio si no lo tienes, 
+// pero recomendado para aprovechar al máximo las funciones de la tabla 
+// si lo tienes, la tabla se adapta a los permisos que enviaste desde el backend
+{
+    "permissions": { "view": 1, "create": 0, "edit": 1, "delete": 1 }, 
+    "data": [
+
+        {"id": 1, "nombre": "Juan Pérez", "email": "juan@mail.com", "position": "Developer"},
+        {"id": 2, "nombre": "Ana Gómez", "email": "ana@mail.com", "position": "Designer"},
+        {"id": 3, "nombre": "Carlos Ruiz", "email": "carlos@mail.com", "position": "Manager"},
+    ]
+}
+
+</code></pre>
+
+
+                        </div>
+
+                        <div class="code-content php-content" style="display:none;">
+<pre><code class="language-javascript">
+// Los permisos no son hobligatorio si no lo tienes, 
+// pero recomendado para aprovechar al máximo las funciones de la tabla 
+// si lo tienes, la tabla se adapta a los permisos que enviaste desde el backend
+
+&lt;?php
+    // Simulamos los datos obtenidos de la base de datos
+    $usuarios = [
+        ["id" => 1, "nombre" => "Juan Pérez", "email" => "juan@mail.com", "position" => "Developer"],
+        ["id" => 2, "nombre" => "Ana Gómez", "email" => "ana@mail.com", "position" => "Designer"],
+        ["id" => 3, "nombre" => "Carlos Ruiz", "email" => "carlos@mail.com", "position" => "Manager"]
+    ];
+
+    // Estructura de respuesta esperada por MiniTable
+    $respuesta = [
+        "permissions" => [
+            "view" => 1, 
+            "create" => 0, 
+            "edit" => 1, 
+            "delete" => 1
+        ],
+        "data" => $usuarios
+    ];
+
+    // Enviamos la respuesta al frontend
+    header('Content-Type: application/json');
+    echo json_encode($respuesta);
+?&gt;
+</code></pre>
+
+
+                        </div>
+                        <div class="code-content node-content" style="display:none;">
+<pre><code class="language-javascript">// Usando Express.js
+app.get('/usuarios', (req, res) => {
+    // Simulamos los datos obtenidos de la base de datos
+    const usuarios = [
+        { id: 1, nombre: "Juan Pérez", email: "juan@mail.com", position: "Developer" },
+        { id: 2, nombre: "Ana Gómez", email: "ana@mail.com", position: "Designer" },
+        { id: 3, nombre: "Carlos Ruiz", email: "carlos@mail.com", position: "Manager" }
+    ];
+
+    // Estructura de respuesta para MiniTable
+    const respuesta = {
+        permissions: {
+            view: 1,
+            create: 0,
+            edit: 1,
+            delete: 1
+        },
+        data: usuarios
+    };
+
+    // Enviamos la respuesta como JSON
+    res.json(respuesta);
+});</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <br><br>
+
+                <div class="feature-box">
+                    <h2>2. Gestión Avanzada (Skin Modern + Full Callbacks)</h2>
+                    <p>En este ejemplo activamos el <strong>Skin Moderno</strong>, el reordenamiento por arrastre, edición de celdas y el uso de <strong>SweetAlert2</strong> para manejar las respuestas del servidor.</p>
+                    
+                    <div id="contenedorUsuariosMini" class="mini-skin-modern"></div>
+
+                    <h3 style="font-size: 1rem; margin-top: 20px;">Código de Configuración Avanzada:</h3>
+
+                    <div class="code-container">
+                        <div class="code-tabs">
+                            <button class="tab-btn active" onclick="switchCode(this, 'js')">Javascript Full</button>
+
+                        </div>
+
+                        <div class="code-content js-content active">
+    <pre><code class="language-javascript">
+    // --- EJECUCIÓN ---
+    let miTablaMini = new MiniTable('#contenedorUsuariosMini', {
+    url: 'servidor.json', 
+    urlEliminar: 'eliminar.php', 
+    urlDetail: 'datosEditar.php', // URL PARA EXTRAER DETALLES Y MOSTRAR EN MODAL DE EDICIÓN O VISTA
+    urlUpdate: 'actualizar_celda.php',
+    urlOrden: 'guardar_orden.php', //  URL PARA GUARDAR EL ORDEN EN LA BASE DE DATOS
+    paginacion: 10,
+    editable: true, // PERMITE EDICION RAPIDA EN CELDA
+    seleccionable: true,
+    draggable: true,  // ACTIVA EL ARRASTRAR Y SOLTAR Drag & Drop
+    botonesFlotantes: true, // SE PUEDE OMITIR SI NO QUIERES LA BARRA DE BOTONES FLOTANTESSE (EDITAR, VER, ELIMINAR) O LO COLOCAS false
+    columns: [
+        { title: 'ID', data: 'id', editable: false }, // Usa editable: false para desactivar la edición en esa columna
+        { title: 'Nombre', data: 'nombre' },
+        { title: 'Correo', data: 'email' },
+        { title: 'Cargo', data: 'position' }
+    ],
+    botonesExtra: [
+        {
+            icon: 'fa-print',
+            title: 'Imprimir Facturas',
+            action: (ids) => {
+                alert("Imprimiendo los IDs: " + ids.join(', '));
+            }
+        },
+        {
+            icon: 'fa-envelope',
+            title: 'Enviar Correo',
+            action: (ids) => {
+                // El usuario decide qué hacer aquí
+                console.log("Enviando correo a:", ids);
+            }
+        }
+    ],
+    // --- CALLBACK DE ACTUALIZAR EN CELDAS ---
+    onUpdateSuccess: (res) => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: res.message || '¡Registro actualizado!'
+        });
+    },
+    onUpdateError: (err) => {
+        Swal.fire({
+            title: 'Error al guardar',
+            text: err.message || 'No se pudo conectar con el servidor',
+            icon: 'error',
+            confirmButtonColor: '#d33'
+        });
+    },
+
+    // --- CALLBACK DE VISTA ---
+    onView: (datos) => {
+        console.log("--- DATOS RECIBIDOS PARA VER ---");
+        console.log(datos);
+        // Aquí podrías abrir un modal de solo lectura
+    },
+
+    // OPCIONAL: Si quieres hacer algo cuando se suelte la fila
+    onReorder: (res) => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: res.message || '¡Orden actualizado!'
+        });
+    },
+
+    // --- CALLBACKS DE EDICIÓN ---
+    onEdit: (datos) => {
+        console.log("--- DATOS RECIBIDOS PARA EDITAR ---");
+        console.log(datos);
+        console.log("Nombre del usuario:", datos.nombre);
+        console.log("Email:", datos.email);
+        console.log("Cargo:", datos.position);
+
+        Swal.fire({
+            title: "Ordena o asigna tus datos en tu modal",
+            text: JSON.stringify(datos),
+            icon: "success"
+        });
+    },
+
+    onEditError: (err) => {
+        console.error("--- ERROR AL OBTENER DETALLE ---");
+        console.error("Detalle técnico:", err);
+        alert("Lo sentimos, hay un problema con la conexión al servidor.");
+    },
+
+    // --- CALLBACKS DE ELIMINACIÓN ---
+    onBeforeDelete: async (ids) => {
+        // Aquí el usuario puede usar SweetAlert2, Bootbox, o su propio Modal
+        const resultado = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Vas a eliminar ${ids.length} registro(s)`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        return resultado.isConfirmed; // Retorna true o false para que la clase proceda
+    },
+
+    onDeleteSuccess: (res) => {
+        console.log("--- ELIMINACIÓN EXITOSA ---");
+        // console.log("Respuesta del servidor:", res);
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: res.message || '¡Registro actualizado!'
+        });
+    },
+
+    onDeleteError: (res) => {
+        console.error("--- ERROR AL ELIMINAR ---");
+        console.error("Respuesta del servidor:", res);
+        alert("El servidor rechazó la eliminación.");
+    }
+});
+
+    </code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="instalacion">
+            <h1>Instalación</h1>
+            <p>Sigue estos pasos para integrar <strong>MiniTable JS</strong> en tu proyecto:</p>
+
+            <!-- <a href="URL_DEL_BOTON_RAW" download="minitable.js" class="btn-descarga">
+                Descargar JS
+            </a> -->
+            <a target="_black" href="TU_ENLACE_A_GIT_AQUI" class="download-button">
+            📦 Descargar MiniTable (v1.0)
+            </a>
+            <ul>
+                <li>
+                    <span class="destacado">1. Incluir Recursos</span>
+                    <span class="sub-punto">Añade los estilos y el script minificado en tu documento:</span>
+                    <div class="code-container">
+                        <pre><code class="language-markup">
+        &lt;!-- Estilos de la tabla --&gt;
+        &lt;link rel="stylesheet" href="style.css"&gt;
+
+        &lt;!-- Librería MiniTable --&gt;
+        &lt;script src="minitable.min.js"&gt;&lt;/script&gt;
+                        </code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <span class="destacado">2. Elemento Contenedor</span>
+                    <span class="sub-punto">Define el lugar donde se dibujará la tabla:</span>
+
+                    <div class="code-container">
+                        <pre><code class="language-markup">
+        &lt;div id="contenedorUsuarios"&gt;&lt;/div&gt;
+                        </code></pre>
+                    </div>
+                </li>
+
+                <li>
+                    <span class="destacado">3. Inicialización Mínima</span>
+                    <span class="sub-punto">Configuración básica para mostrar datos:</span>
+
+                    <div class="code-container">
+                        <div class="code-tabs">
+                            <button class="tab-btn active" onclick="switchCode(this, 'js')">Javascript</button>
+                            <button class="tab-btn" onclick="switchCode(this, 'rs')">Respuesta Backend</button>
+                        </div>
+
+                        <div class="code-content js-content active">
+        
+                            <div class="code-container">
+                                <pre><code class="language-javascript">
+                let miTabla = new MiniTable('#contenedorUsuarios', {
+                    url: 'servidor.json', // URL principal de donde se extraen los datos
+                    paginacion: 10,       // Cantidad de registros a mostrar por vista
+                    botonesFlotantes: false, // Desactiva la barra de acciones (Ver, Editar, Eliminar)
+                    columns: [
+                        { title: 'ID', data: 'id' },           // Título en tabla y llave del JSON
+                        { title: 'Nombre', data: 'nombre' },
+                        { title: 'Correo', data: 'email' },
+                        { title: 'Cargo', data: 'position' }
+                    ]
+                });
+                                </code></pre>
+                            </div>
+
+                        </div>
+                        <div class="code-content rs-content" style="display:none;">
+<pre><code class="language-javascript">
+// Respuesta esperada del servidor (puede ser PHP, Node, Python, etc.)
+<pre><code class="language-php">
+&lt;?php
+    // 1. Simulamos los datos obtenidos de la base de datos (los tres registros)
+    $usuarios = [
+        ["id" => 1, "nombre" => "Juan Pérez", "email" => "juan@mail.com", "position" => "Developer"],
+        ["id" => 2, "nombre" => "Ana Gómez", "email" => "ana@mail.com", "position" => "Designer"],
+        ["id" => 3, "nombre" => "Carlos Ruiz", "email" => "carlos@mail.com", "position" => "Manager"]
+    ];
+
+    // 2. Estructura de respuesta completa para MiniTable
+    $respuesta = [
+        "permissions" => [
+            "view" => 1,   // Permiso opcional: Controla el icono de ver (ojo)
+            "create" => 0, // Permiso opcional: Controla botón de creación
+            "edit" => 1,   // Permiso opcional: Controla el icono de editar (lápiz)
+            "delete" => 1  // Permiso opcional: Controla el icono de borrar (basura)
+        ],
+        "data" => $usuarios // Los tres registros para listar en la tabla
+    ];
+
+    // 3. Cabecera y salida JSON
+    header('Content-Type: application/json');
+    echo json_encode($respuesta);
+?&gt;
+</code></pre>
+
+    </code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nota-permisos">
+                        <strong>Desglose de configuración:</strong>
+                        <br>• <span class="destacado">MiniTable:</span> Es la clase principal que activa todo el funcionamiento.
+                        <br>• <span class="destacado">url:</span> El punto de enlace donde la tabla buscará la información.
+                        <br>• <span class="destacado">botonesFlotantes:</span> Por defecto es <code>true</code>. Si solo deseas mostrar datos sin permitir acciones, debes declararlo como <code>false</code>.
+                        <br>• <span class="destacado">columns:</span> Define el mapeo; <code>title</code> es lo que ve el usuario y <code>data</code> es el nombre exacto del campo en tu JSON.
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <section id="detalles">
+            <h1>Visualización y Edición (Detalle)</h1>
+            <p>Permite obtener la información completa de un registro desde el servidor para mostrarla en vistas de solo lectura o formularios de edición.</p>
+
+            <li>
+                <span class="destacado">Configuración de Detalle (urlDetail)</span>
+                <span class="sub-punto">Gestión centralizada para la recuperación de datos extendidos:</span>
+                <span class="sub-punto"><span class="destacado">Ruta Única:</span> El parámetro <code>urlDetail: 'datosEditar.php'</code> define el destino para obtener el objeto completo.</span>
+                <span class="sub-punto"><span class="destacado">Doble Propósito:</span> Esta misma ruta sirve tanto para la vista de solo lectura como para cargar el formulario de edición.</span>
+                <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Petición:</span> Envía automáticamente el ID del registro mediante una solicitud al servidor.</span>
+                <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Respuesta:</span> Debe retornar un JSON con todos los campos necesarios para mapear en tus modales.</span>
+                <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Gestión de Permisos:</span> Determina la visibilidad de los botones de acción (ver, editar, eliminar) según el perfil del usuario. Cabe destacar que estos permisos son opcionales y son retornados al momento de listar la tabla.</span>
+                <span class="sub-punto"><span class="destacado">Sincronización:</span> Al recibir los datos, se disparan los callbacks correspondientes (onView u onEdit) permitiendo una integración limpia con librerías externas.</span>
+            </li>
+            <div class="code-container">
+                <div class="code-tabs">
+                    <button class="tab-btn active" onclick="switchCode(this, 'js')">Javascript</button>
+                    <button class="tab-btn" onclick="switchCode(this, 'response')">Respuesta Backend</button>
+                    <button class="tab-btn" onclick="switchCode(this, 'callback')">Callbacks</button>
+                </div>
+
+                <div class="code-content js-content active">
+
+                    <div class="code-container">
+                        <pre><code class="language-javascript">
+                let miTabla = new MiniTable('#contenedorUsuarios', {
+                    url: 'servidor.json',
+                    urlDetail: 'datosEditar.php', // Ruta que recibe el ID y retorna el objeto completo
+                    botonesFlotantes: true,        // Habilita los iconos de Ver (Ojo) y Editar (Lápiz)
+        
+                    // --- CALLBACK DE VISTA (Icono Ojo) ---
+                    onView: (datos) => {
+                        console.log("--- DATOS RECIBIDOS PARA VER ---");
+                        console.log(datos);
+                        // Lógica para abrir modal de solo lectura
+                    },
+        
+                    // --- CALLBACK DE EDICIÓN (Icono Lápiz) ---
+                    onEdit: (datos) => {
+                        console.log("--- DATOS RECIBIDOS PARA EDITAR ---");
+                        console.log("Nombre del usuario:", datos.nombre);
+        
+                    }
+                });
+                        </code></pre>
+                    </div>
+                </div>
+                <div class="code-content response-content " style="display:none;">
+
+                    <div class="code-container">
+<pre><code class="language-javascript">
+// Respuesta esperada del servidor (puede ser PHP, Node, Python, etc.)
+&lt;?php
+header('Content-Type: application/json');
+
+// Recibimos el ID enviado por la MiniTable
+$json = file_get_contents('php://input');
+$data = json_decode($json, true);
+$id = $data['id'] ?? null;
+
+// Simulamos que buscamos en la base de datos
+// En un caso real: SELECT * FROM empleados WHERE id = $id
+$respuesta = [
+    "id" => $id,
+    "nombre" => "Juan Pérez",
+    "email" => "juan@mail.com",
+    "position" => "Developer",
+    "dept" => "Sistemas",
+    "status" => "Activo",
+    "direccion" => "Av. Libertador 456", // Dato extra que no está en la tabla
+    "fecha_contrato" => "2022-05-20"     // Dato extra que no está en la tabla
+];
+
+echo json_encode($respuesta);
+
+?&gt;
+</code></pre>
+                    </div>
+                </div>
+                <div class="code-content callback-content " style="display:none;">
+
+                    <div class="code-container">
+<pre><code class="language-javascript">
+    // --- CALLBACKS DE EDICIÓN ---
+    onEdit: (datos) => {
+        console.log("--- DATOS RECIBIDOS PARA EDITAR ---");
+        console.log(datos);
+        console.log("Nombre del usuario:", datos.nombre);
+        console.log("Email:", datos.email);
+        console.log("Cargo:", datos.position);
+        // Aquí podrías abrir un modal de edición con los datos precargados
+    },
+
+    // --- CALLBACK DE VISTA ---
+    onView: (datos) => {
+        console.log("--- DATOS RECIBIDOS PARA VER ---");
+        console.log(datos);
+        // Aquí podrías abrir un modal de solo lectura
+    },
+</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nota-permisos">
+                <strong>Explicación de parámetros:</strong>
+                <br>• <span class="destacado">urlDetalle:</span> Archivo remoto que procesa la solicitud del registro completo.
+                <br>• <span class="destacado">onView:</span> Función que se dispara al presionar el botón de ver; recibe el objeto JSON con los datos.
+                <br>• <span class="destacado">onEdit:</span> Función que se dispara al presionar el botón de editar; ideal para cargar datos en formularios.
+            </div>
+        </section>
+
+
+        <section id="eliminacion">
+            <h1>Eliminación de Registros</h1>
+            <p>Gestiona el borrado de filas de forma segura, permitiendo confirmar la acción antes de afectar al servidor.</p>
+
+            
+
+            <div class="code-container">
+                <div class="code-tabs">
+                    <button class="tab-btn active" onclick="switchCode(this, 'js')">Javascript</button>
+                    <button class="tab-btn" onclick="switchCode(this, 'response')">Respuesta Backend</button>
+                    <button class="tab-btn" onclick="switchCode(this, 'callback')">Callbacks</button>
+                </div>
+
+                <div class="code-content js-content active">
+
+    <div class="code-container">
+                <pre><code class="language-javascript">
+        let miTabla = new MiniTable('#contenedorUsuarios', {
+            url: 'servidor.json',
+            urlEliminar: 'eliminar.php', 
+            seleccionable: true, // Activa la columna de selección múltiple (Checkboxes)
+
+
+        });
+            </code></pre>
+    </div>
+                </div>
+                <div class="code-content response-content " style="display:none;">
+<pre><code class="language-javascript">
+    // Respuesta esperada del servidor (puede ser PHP, Node, Python, etc.)
+&lt;?php
+
+    // 1. Capturamos lo que envía el fetch (JSON crudo)
+    $json = file_get_contents('php://input');
+    // 2. Convertimos ese JSON en un array de PHP
+    $data = json_decode($json, true);
+
+    /**
+    * PARA TU CONTROL:
+    * Esto guardará lo que recibes en un archivo llamado "log.txt" 
+    * para que verifiques que los IDs están llegando bien.
+    */
+    file_put_contents('log.txt', print_r($data, true));
+
+    // Indicamos al navegador que responderemos con JSON
+    header('Content-Type: application/json');
+    // 3. Mandamos la respuesta que la clase espera para borrar la fila
+    echo json_encode([
+        "success" => true,
+        "message" => "Datos eliminados correctamente en PHP"
+    ]);
+
+?&gt;
+</code></pre>
+                    
+                </div>
+                <div class="code-content callback-content " style="display:none;">
+<div class="code-container">
+    <pre><code class="language-javascript">
+    // --- CALLBACKS DE ELIMINACIÓN ---
+    onBeforeDelete: async (ids) => {
+        // Aquí el usuario puede usar SweetAlert2, Bootbox, o su propio Modal
+        const resultado = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Vas a eliminar ${ids.length} registro(s)`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        return resultado.isConfirmed; // Retorna true o false para que la clase proceda
+    },
+
+    onDeleteSuccess: (res) => {
+        console.log("--- ELIMINACIÓN EXITOSA ---");
+        //Aqui podrías mostrar un Toast o una notificación de éxito
+    },
+
+    onDeleteError: (res) => {
+        console.error("--- ERROR AL ELIMINAR ---");
+        console.error("Respuesta del servidor:", res);
+        //Aqui podrías mostrar un Toast o una notificación de éxito
+    }
+        </code></pre>
+</div>
+
+                </div>
+            </div>
+
+            <ul>
+                <li>
+                    <span class="destacado">seleccionable: true</span>
+                    <span class="sub-punto">Activa la columna de selección múltiple (checkbox) en el lateral izquierdo:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Acciones en Lote:</span> Es indispensable para habilitar la eliminación masiva.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Versatilidad:</span> Además del borrado, permite preparar los datos para funciones de exportación.</span>
+                </li>
+                <li>
+                    <span class="destacado">urlEliminar: 'eliminar.php'</span>
+                    <span class="sub-punto">Define la ruta del servidor encargada de recibir la petición de borrado.</span>
+                </li>
+                <li>
+                    <span class="destacado">onBeforeDelete (Async)</span>
+                    <span class="sub-punto">Función de validación previa al borrado:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Confirmación:</span> Ideal para integrar librerías como SweetAlert2.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Retorno:</span> Debe devolver obligatoriamente <code>true</code> para ejecutar la petición o <code>false</code> para cancelarla.</span>
+                </li>
+                <li>
+                    <span class="destacado">onDeleteSuccess & onDeleteError</span>
+                    <span class="sub-punto">Controladores de respuesta del servidor:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Éxito:</span> Se ejecuta cuando el servidor confirma el borrado; actualiza la interfaz automáticamente.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Error:</span> Permite capturar fallos de conexión o rechazos del backend para informar al usuario.</span>
+                </li>
+            </ul>
+        </section>
+
+
+        <section id="edicion-celda">
+            <h1>Edición por Celda</h1>
+            <p>Habilita la edición directa sobre la tabla al hacer doble clic, enviando los cambios automáticamente al servidor.</p>
+
+
+            <div class="code-container">
+                <div class="code-tabs">
+                    <button class="tab-btn active" onclick="switchCode(this, 'js')">Javascript</button>
+                    <button class="tab-btn" onclick="switchCode(this, 'response')">Respuesta Backend</button>
+                    <button class="tab-btn" onclick="switchCode(this, 'callback')">Callbacks</button>
+                </div>
+
+                <div class="code-content js-content active">
+
+    <div class="code-container">
+        <pre><code class="language-javascript">
+let miTabla = new MiniTable('#contenedorUsuarios', {
+    url: 'servidor.json',
+    urlUpdate: 'actualizar_celda.php', // Archivo PHP/Node que procesa el cambio
+    editable: true,    // ACTIVA la funcionalidad de edición por celdas
+
+    columns: [
+        { title: 'ID', data: 'id', editable: false }, // Bloquea la edición para esta columna
+        { title: 'Nombre', data: 'nombre' },           // Editable por defecto
+        { title: 'Correo', data: 'email' },
+        { title: 'Cargo', data: 'position' }
+    ],
+
+    // Se ejecuta cuando el servidor responde con success: true
+    onUpdateSuccess: (res) => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: res.message || '¡Registro actualizado!'
+        });
+    },
+
+    // Se ejecuta si hay error de red o el servidor responde success: false
+    onUpdateError: (err) => {
+        Swal.fire({
+            title: 'Error al guardar',
+            text: err.message || 'No se pudo conectar con el servidor',
+            icon: 'error',
+            confirmButtonColor: '#d33'
+        });
+    }
+});
+        </code></pre>
+    </div>
+
+                </div>
+                <div class="code-content response-content " style="display:none;">
+    <div class="code-container">
+        <pre><code class="language-javascript">
+&lt;?php
+    // 1. Recibir los datos crudos del JS
+    $json = file_get_contents('php://input');
+    $data = json_decode($json, true);
+
+    // 2. Extraer las variables
+    $id    = $data['id'];
+    $campo = $data['field'];
+    $valor = $data['value'];
+
+    // print_r($data);
+
+    // 3. Simular una respuesta exitosa
+    // Aquí es donde harías tu UPDATE usuarios SET $campo = '$valor' WHERE id = $id
+    $respuesta = [
+        "success" => true,
+        "message" => "Cambiado! El campo $campo ahora es: $valor"
+    ];
+
+    // 4. Enviar la respuesta de vuelta a la tabla
+    header('Content-Type: application/json');
+    echo json_encode($respuesta);
+
+?&gt;
+    </code></pre>
+    </div>
+                </div>
+                <div class="code-content callback-content " style="display:none;">
+
+<pre><code class="language-javascript">
+    // --- CALLBACK DE ACTUALIZAR EN CELDAS ---
+    onUpdateSuccess: (res) => {
+        // Se ejecuta cuando el servidor responde con éxito (success: true)
+    },
+    onUpdateError: (err) => {
+        // Se ejecuta si ocurre un error en la petición o el servidor responde success: false
+    },
+</code></pre>
+                </div>
+            </div>
+
+
+            <ul>
+                <li>
+                    <span class="destacado">editable: true</span>
+                    <span class="sub-punto">Interruptor maestro que permite a la librería escuchar los eventos de doble clic para transformar la celda en un campo de texto.</span>
+                </li>
+                <li>
+                    <span class="destacado">Control de Columnas (editable: false)</span>
+                    <span class="sub-punto">Permite proteger datos sensibles dentro de la misma tabla:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Bloqueo:</span> Al definir <code>editable: false</code> en una columna, esta se mantendrá como solo lectura.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Uso común:</span> Ideal para campos como IDs, fechas de creación o totales calculados que no deben ser alterados manualmente.</span>
+                </li>
+                <li>
+                    <span class="destacado">urlUpdate: 'actualizar_celda.php'</span>
+                    <span class="sub-punto">Ruta del servidor que recibe vía POST el ID, el nombre del campo y el nuevo valor.</span>
+                </li>
+            </ul>
+
+            <div class="nota-permisos">
+                <strong>Seguridad:</strong> Aunque la interfaz bloquee la edición con <code>editable: false</code>, es <strong>obligatorio</strong> validar en tu backend qué campos tienen permiso de escritura para evitar inyecciones de datos no autorizadas.
+            </div>
+        </section>
+
+        <section id="reordenamiento">
+            <h1>Drag & Drop (Reordenar)</h1>
+            <p>Permite organizar las filas visualmente arrastrándolas. La librería sincroniza el nuevo orden automáticamente con el servidor.</p>
+
+                        <div class="code-container">
+                <div class="code-tabs">
+                    <button class="tab-btn active" onclick="switchCode(this, 'js')">Javascript</button>
+                    <button class="tab-btn" onclick="switchCode(this, 'response')">Respuesta Backend</button>
+                    <button class="tab-btn" onclick="switchCode(this, 'callback')">Callbacks</button>
+                </div>
+
+                <div class="code-content js-content active">
+                    <div class="code-container">
+                        <pre><code class="language-javascript">
+                let miTabla = new MiniTable('#contenedorUsuarios', {
+                    url: 'servidor.json',
+                    urlOrden: 'guardar_orden.php', // Ruta que recibe el nuevo array de IDs ordenados
+                    draggable: true,  // ACTIVA la funcionalidad de arrastre y los puntos de agarre
+        
+                    // OPCIONAL: Se ejecuta cuando se suelta la fila y el servidor responde con éxito
+                    onReorder: (res) => {
+                        // Configuración de la notificación visual
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 4000,
+                            timerProgressBar: true,
+                        });
+        
+                        // Muestra mensaje de confirmación del nuevo orden
+                        Toast.fire({
+                            icon: 'success',
+                            title: res.message || '¡Orden actualizado!'
+                        });
+                    },
+                });
+                        </code></pre>
+                    </div>
+
+                </div>
+                <div class="code-content response-content " style="display:none;">
+<pre><code class="language-javascript">
+&lt;?php
+
+    // Recibes algo como: { "nuevoOrden": ["15", "2", "8", "21"] }
+    $data = json_decode(file_get_contents('php://input'), true);
+    $ids = $data['nuevoOrden'];
+
+    // Verificamos que existan IDs para procesar
+    if ($ids) {
+        foreach ($ids as $posicion => $id) {
+            // Aquí harías tu UPDATE en la base de datos
+            // Ejemplo: UPDATE usuarios SET orden = $posicion WHERE id = $id
+        }
+    }
+
+    echo json_encode([
+        'success' => true,
+        "message" => "Datos ordenados correctamente en PHP"
+    ]);
+
+?&gt;
+</code></pre>
+                </div>
+                <div class="code-content callback-content " style="display:none;">
+<pre><code class="language-javascript">
+    // OPCIONAL: Si quieres hacer algo cuando se suelte la fila
+    onReorder: (res) => {
+        // Este callback se ejecuta automáticamente tras completar el arrastre y recibir respuesta del servidor
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: res.message || '¡Orden actualizado!'
+        });
+    },
+</code></pre>
+
+                </div>
+            </div>
+
+            <ul>
+                <li>
+                    <span class="destacado">draggable: true</span>
+                    <span class="sub-punto">Este parámetro es obligatorio para habilitar la lógica de movimiento y mostrar los iconos de arrastre en cada fila.</span>
+                </li>
+                <li>
+                    <span class="destacado">urlOrden: 'guardar_orden.php'</span>
+                    <span class="sub-punto">Ruta del backend que recibirá el listado de IDs en el nuevo orden establecido por el usuario.</span>
+                </li>
+                <li>
+                    <span class="destacado">onReorder</span>
+                    <span class="sub-punto">Callback de finalización:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Sincronización:</span> Se dispara justo después de que el servidor confirma que guardó el orden correctamente.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Confirmación:</span> Ideal para dar feedback al usuario de que su cambio fue persistido.</span>
+                </li>
+            </ul>
+        </section>
+
+        <section id="acciones-masivas">
+            <h1>Acciones Masivas Personalizadas</h1>
+            <p>Puedes extender las capacidades de la barra superior agregando botones personalizados para procesar los registros seleccionados.</p>
+
+            <div class="code-container">
+                <pre><code class="language-javascript">
+        let miTabla = new MiniTable('#contenedorUsuarios', {
+            url: 'servidor.json',
+            seleccionable: true, // OBLIGATORIO: Para que aparezca la barra y se capturen los IDs
+
+            // --- BOTONES ADICIONALES EN LA BARRA SUPERIOR ---
+            botonesExtra: [
+                {
+                    icon: 'fa-print',      // Icono de FontAwesome
+                    title: 'Imprimir Facturas',
+                    action: (ids) => {     // Recibe el array de IDs seleccionados
+                        alert("Imprimiendo los IDs: " + ids.join(', '));
+                    }
+                },
+                {
+                    icon: 'fa-envelope',
+                    title: 'Enviar Correo',
+                    action: (ids) => {
+                        // El usuario decide qué hacer aquí
+                        console.log("Enviando correo a:", ids);
+                    }
+                }
+            ],
+        });
+                </code></pre>
+            </div>
+
+            <ul>
+                <li>
+                    <span class="destacado">seleccionable: true</span>
+                    <span class="sub-punto">Es el requisito indispensable. Sin esto, la barra superior no se activa y el parámetro <code>botonesExtra</code> no será visible.</span>
+                </li>
+                <li>
+                    <span class="destacado">botonesExtra (Array de Objetos)</span>
+                    <span class="sub-punto">Permite inyectar funcionalidades propias:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">icon:</span> Clase CSS del icono que se mostrará en el botón.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">title:</span> Texto descriptivo (tooltip) al pasar el ratón.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">action:</span> Función callback que provee los IDs de las filas que tienen el checkbox activo.</span>
+                </li>
+            </ul>
+
+            <div class="nota-permisos">
+                <strong>Nota de uso:</strong> Esta herramienta es ideal para procesos por lote como generación de reportes PDF, envíos masivos de correos o cambios de estado masivos en tu base de datos.
+            </div>
+        </section>
+
+        <section id="referencia-rapida">
+            <h1>Referencia Rápida de Configuración</h1>
+            <p>Un resumen detallado de todas las propiedades y callbacks disponibles para la personalización de la tabla.</p>
+
+            <ul>
+                <li>
+                    <span class="destacado">Endpoints del Servidor (URLs)</span>
+                    <span class="sub-punto">Define las rutas de comunicación con el backend:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">url:</span> Ruta para la carga inicial de datos.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">urlEliminar:</span> Procesa el borrado de registros.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">urlDetail:</span> Obtiene datos para ver o editar (Doble propósito).</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">urlUpdate:</span> Recibe actualizaciones de edición rápida por celda.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">urlOrden:</span> Guarda la nueva posición tras un Drag & Drop.</span>
+                </li>
+
+                <li>
+                    <span class="destacado">Comportamiento y Funciones</span>
+                    <span class="sub-punto">Controlan qué puede hacer el usuario en la tabla:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">paginacion:</span> Cantidad de registros por página (ej: 10).</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">editable:</span> Activa la edición global por celda.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">seleccionable:</span> Habilita checkboxes y barra de acciones masivas.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">draggable:</span> Activa el reordenamiento de filas por arrastre.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">botonesFlotantes:</span> Muestra/Oculta el menú lateral de cada fila.</span>
+                </li>
+
+                <li>
+                    <span class="destacado">Eventos y Callbacks</span>
+                    <span class="sub-punto">Funciones para capturar respuestas y personalizar flujos:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">onUpdateSuccess/Error:</span> Feedback tras editar una celda.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">onView / onEdit:</span> Disparan la lógica para mostrar datos en modales.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">onEditError:</span> Captura fallos al intentar cargar datos para edición.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">onReorder:</span> Se ejecuta tras guardar el nuevo orden de las filas.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">onBeforeDelete:</span> Permite confirmar el borrado (Soporta Async/Await).</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">onDeleteSuccess/Error:</span> Gestión de respuesta tras la eliminación.</span>
+                </li>
+            </ul>
+        </section>
+
+        <section id="licencia-terminos">
+            <h1>Licencia y Términos</h1>
+            <div class="nota-permisos">
+                <strong>Licencia MIT:</strong> Esta librería es de código abierto y gratuita para uso personal y comercial.
+            </div>
+            
+            <ul>
+                <li>
+                    <span class="destacado">Condiciones de Uso</span>
+                    <span class="sub-punto">Al utilizar MiniTable, aceptas los siguientes puntos:</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Sin Garantía:</span> El software se entrega "tal cual", sin responsabilidad por pérdida de datos.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Responsabilidad Backend:</span> El programador debe validar siempre la seguridad en el servidor.</span>
+                    <span class="sub-punto" style="margin-left: 3rem;">• <span class="destacado">Créditos:</span> Se agradece mantener la autoría original en el código fuente.</span>
+                </li>
+            </ul>
+        </section>
+
+        
+
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markup.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- <script src="minitable.js"></script> -->
+    <script src="minitable.min.js"></script>
+
+<script>
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const links = document.querySelectorAll('nav a'); // Asegúrate de que tus enlaces estén en un <nav> o ajusta el selector
+    const sections = document.querySelectorAll('section[id]'); // Detecta todas las secciones con ID
+
+    // --- 1. FUNCIÓN PARA CLIC (DESPLAZAMIENTO SUAVE) ---
+    links.forEach(link => {
+        link.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+
+            if (targetId.startsWith('#') && targetId !== '#') {
+                e.preventDefault();
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // Desplazamiento suave
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70, // Ajuste de -70px por si tienes un menú fijo arriba
+                        behavior: 'smooth'
+                    });
+
+                    // Actualizamos la clase activa manualmente al dar clic
+                    links.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            }
+        });
+    });
+
+    // --- 2. FUNCIÓN PARA SCROLL (MARCAR SEGÚN POSICIÓN) ---
+    const observerOptions = {
+        root: null,
+        rootMargin: '-20% 0px -70% 0px', // Ajusta cuándo se considera que entraste a una sección
+        threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const id = entry.target.getAttribute('id');
+                
+                // Quitamos la clase de todos y la ponemos al que coincide con el ID visible
+                links.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${id}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, observerOptions);
+
+    // Activamos el observador para cada sección
+    sections.forEach(section => observer.observe(section));
+});
+
+
+function switchCode(btn, type) {
+    const container = btn.closest('.code-container');
+    container.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    container.querySelectorAll('.code-content').forEach(c => c.style.display = 'none');
+    container.querySelector('.' + type + '-content').style.display = 'block';
+}
+
+
+    // --- EJECUCIÓN ---
+let miTabla = new MiniTable('#contenedorUsuarios', {
+    url: 'servidor.json', // El JavaScript irá aquí a buscar el JSON completo
+    paginacion: 10,
+    botonesFlotantes: false,
+    seleccionable: true,
+    columns: [
+        { title: 'ID', data: 'id' },
+        { title: 'Nombre', data: 'nombre' },
+        { title: 'Correo', data: 'email' },
+        { title: 'Cargo', data: 'position' }
+    ]
+});
+
+let miTablaMini = new MiniTable('#contenedorUsuariosMini', {
+    url: 'servidor.json', 
+    urlEliminar: 'eliminar.json', 
+    urlDetail: 'datosEditar.json', // url para datalles y editar
+    urlUpdate: 'actualizar_celda.json',
+    urlOrden: 'guardar_orden.json', // <--- NUEVA URL PARA LA BASE DE DATOS
+    paginacion: 10,
+    editable: true, //permite editacion rapida en celda
+    seleccionable: true,
+    draggable: true,  // <--- NUEVO: Activa el arrastrar y soltar
+    botonesFlotantes: true, // Se puede omitir ya que es true por defecto
+    columns: [
+        { title: 'ID', data: 'id', editable: false },
+        { title: 'Nombre', data: 'nombre' },
+        { title: 'Correo', data: 'email' },
+        { title: 'Cargo', data: 'position' }
+    ],
+    botonesExtra: [
+        {
+            icon: 'fa-print',
+            title: 'Imprimir Facturas',
+            action: (ids) => {
+                alert("Imprimiendo los IDs: " + ids.join(', '));
+            }
+        },
+        {
+            icon: 'fa-envelope',
+            title: 'Enviar Correo',
+            action: (ids) => {
+                // El usuario decide qué hacer aquí
+                console.log("Enviando correo a:", ids);
+            }
+        }
+    ],
+    // --- CALLBACK DE ACTUALIZAR EN CELDAS ---
+    onUpdateSuccess: (res) => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: res.message || '¡Registro actualizado!'
+        });
+    },
+    onUpdateError: (err) => {
+        Swal.fire({
+            title: 'Error al guardar',
+            text: err.message || 'No se pudo conectar con el servidor',
+            icon: 'error',
+            confirmButtonColor: '#d33'
+        });
+    },
+
+    // --- CALLBACK DE VISTA ---
+    onView: (datos) => {
+        console.log("--- DATOS RECIBIDOS PARA VER ---");
+        console.log(datos);
+        // Aquí podrías abrir un modal de solo lectura
+    },
+
+    // OPCIONAL: Si quieres hacer algo cuando se suelte la fila
+    onReorder: (res) => {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: res.message || '¡Orden actualizado!'
+        });
+    },
+
+    // --- CALLBACKS DE EDICIÓN ---
+    onEdit: (datos) => {
+        console.log("--- DATOS RECIBIDOS PARA EDITAR ---");
+        console.log(datos);
+        console.log("Nombre del usuario:", datos.nombre);
+        console.log("Email:", datos.email);
+        console.log("Cargo:", datos.position);
+
+        Swal.fire({
+            title: "Ordena o asigna tus datos en tu modal",
+            text: JSON.stringify(datos),
+            icon: "success"
+        });
+    },
+
+    onEditError: (err) => {
+        console.error("--- ERROR AL OBTENER DETALLE ---");
+        console.error("Detalle técnico:", err);
+        alert("Lo sentimos, hay un problema con la conexión al servidor.");
+    },
+
+    // --- CALLBACKS DE ELIMINACIÓN ---
+    onBeforeDelete: async (ids) => {
+        // Aquí el usuario puede usar SweetAlert2, Bootbox, o su propio Modal
+        const resultado = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: `Vas a eliminar ${ids.length} registro(s)`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        });
+
+        return resultado.isConfirmed; // Retorna true o false para que la clase proceda
+    },
+
+    onDeleteSuccess: (res) => {
+        console.log("--- ELIMINACIÓN EXITOSA ---");
+        // console.log("Respuesta del servidor:", res);
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 4000,
+            timerProgressBar: true,
+        });
+
+        Toast.fire({
+            icon: 'success',
+            title: res.message || '¡Registro actualizado!'
+        });
+    },
+
+    onDeleteError: (res) => {
+        console.error("--- ERROR AL ELIMINAR ---");
+        console.error("Respuesta del servidor:", res);
+        alert("El servidor rechazó la eliminación.");
+    }
+});
+</script>
+</body>
+</html>
